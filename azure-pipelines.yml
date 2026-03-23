@@ -16,6 +16,19 @@ stages:
               terraformVersion: 'latest'
 
           - script: |
+              curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+              unzip awscliv2.zip
+              sudo ./aws/install
+              aws --version
+            displayName: Install AWS CLI
+
+          - script: |
+              aws configure set aws_access_key_id $(AWS_ACCESS_KEY_ID)
+              aws configure set aws_secret_access_key $(AWS_SECRET_ACCESS_KEY)
+              aws configure set region ap-south-1
+            displayName: Configure AWS
+
+          - script: |
               aws eks update-kubeconfig --region ap-south-1 --name tod-app-cluster
               terraform init
             displayName: terraform init
