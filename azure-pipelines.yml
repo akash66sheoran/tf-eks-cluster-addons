@@ -16,15 +16,6 @@ stages:
               terraformVersion: 'latest'
 
           - task: Bash@3
-            displayName: Install AWS CLI
-            inputs:
-              targetType: 'inline'
-              script: |
-                curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-                unzip awscliv2.zip
-                sudo ./aws/install
-
-          - task: Bash@3
             displayName: Configure AWS
             inputs:
               targetType: 'inline'
