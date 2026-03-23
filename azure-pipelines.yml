@@ -50,6 +50,7 @@ stages:
               AWS_DEFAULT_REGION: $(AWS_DEFAULT_REGION)
 
           - script: |
+              aws eks update-kubeconfig --region ap-south-1 --name tod-app-cluster
               terraform apply --var-file=variables.tfvars --auto-approve
             displayName: terraform apply
             workingDirectory: '$(Build.SourcesDirectory)/aws-load-balaner-controller'
