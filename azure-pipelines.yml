@@ -15,22 +15,6 @@ stages:
             inputs:
               terraformVersion: 'latest'
 
-          - task: Bash@3
-            displayName: Configure AWS
-            inputs:
-              targetType: 'inline'
-              script: |
-                aws configure set aws_access_key_id $(AWS_ACCESS_KEY_ID)
-                aws configure set aws_secret_access_key $(AWS_SECRET_ACCESS_KEY)
-                aws configure set region ap-south-1
-
-          - task: Bash@3
-            displayName: Update kubeconfig
-            inputs:
-              targetType: 'inline'
-              script: |
-                aws eks update-kubeconfig --region ap-south-1 --name tod-app-cluster
-
           - script: |
               terraform init
             displayName: terraform init
