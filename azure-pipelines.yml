@@ -3,6 +3,9 @@ trigger: none
 pool:
   vmImage: ubuntu-latest
 
+variables:
+  KUBECONFIG: $(Pipeline.Workspace)/kubeconfig
+
 stages:
   - stage: InstallAWSLoadBalancerController
     displayName: Install AWS Loadbalancer Controller
@@ -29,7 +32,11 @@ stages:
             displayName: Configure AWS
 
           - script: |
-              aws eks update-kubeconfig --region ap-south-1 --name tod-app-cluster
+              aws eks update-kubeconfig --name tod-app-cluster --region ap-south-1 --kubeconfig $(KUBECONFIG)
+              kubectl get nodes
+            displayName: Update kubeconfig
+
+          - script: |
               terraform init
             displayName: terraform init
             workingDirectory: '$(Build.SourcesDirectory)/aws-load-balaner-controller'
@@ -37,9 +44,9 @@ stages:
               AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
               AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
               AWS_DEFAULT_REGION: $(AWS_DEFAULT_REGION)
+              KUBECONFIG: $(KUBECONFIG)
 
           - script: |
-              aws eks update-kubeconfig --region ap-south-1 --name tod-app-cluster
               terraform plan --var-file=variables.tfvars
             displayName: terraform plan
             workingDirectory: '$(Build.SourcesDirectory)/aws-load-balaner-controller'
@@ -47,9 +54,9 @@ stages:
               AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
               AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
               AWS_DEFAULT_REGION: $(AWS_DEFAULT_REGION)
+              KUBECONFIG: $(KUBECONFIG)
 
           - script: |
-              aws eks update-kubeconfig --region ap-south-1 --name tod-app-cluster
               terraform apply --var-file=variables.tfvars --auto-approve
             displayName: terraform apply
             workingDirectory: '$(Build.SourcesDirectory)/aws-load-balaner-controller'
@@ -57,3 +64,4 @@ stages:
               AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
               AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
               AWS_DEFAULT_REGION: $(AWS_DEFAULT_REGION)
+              KUBECONFIG: $(KUBECONFIG)
