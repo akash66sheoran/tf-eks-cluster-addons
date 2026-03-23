@@ -17,13 +17,6 @@ stages:
 
           - script: |
               aws eks update-kubeconfig --region ap-south-1 --name tod-app-cluster
-            displayName: Configure kubeconfig
-            env:
-              AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
-              AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
-              AWS_DEFAULT_REGION: ap-south-1
-
-          - script: |
               terraform init
             displayName: terraform init
             workingDirectory: '$(Build.SourcesDirectory)/aws-load-balaner-controller'
@@ -33,6 +26,7 @@ stages:
               AWS_DEFAULT_REGION: $(AWS_DEFAULT_REGION)
 
           - script: |
+              aws eks update-kubeconfig --region ap-south-1 --name tod-app-cluster
               terraform plan --var-file=variables.tfvars
             displayName: terraform plan
             workingDirectory: '$(Build.SourcesDirectory)/aws-load-balaner-controller'
@@ -42,16 +36,7 @@ stages:
               AWS_DEFAULT_REGION: $(AWS_DEFAULT_REGION)
 
           - script: |
-              aws sts get-caller-identity
-              aws eks get-token --cluster-name tod-app-cluster
-              kubectl get nodes
-            displayName: Test AWS and EKS access
-            env:
-              AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
-              AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
-              AWS_DEFAULT_REGION: ap-south-1
-
-          - script: |
+              aws eks update-kubeconfig --region ap-south-1 --name tod-app-cluster
               terraform apply --var-file=variables.tfvars --auto-approve
             displayName: terraform apply
             workingDirectory: '$(Build.SourcesDirectory)/aws-load-balaner-controller'
