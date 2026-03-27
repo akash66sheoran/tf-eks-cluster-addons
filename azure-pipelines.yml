@@ -34,7 +34,7 @@ stages:
               AWS_DEFAULT_REGION: $(AWS_DEFAULT_REGION)
 
           - script: |
-              terraform plan --var-file=variables.tfvars -var="cluster_name=${{ parameters.cluster_name }}"
+              terraform plan --var-file=variables.tfvars -var="vpc_id=${{ parameters.vpc_id }}" -var="cluster_name=${{ parameters.cluster_name }}"
             displayName: terraform plan
             workingDirectory: '$(Build.SourcesDirectory)/aws-load-balaner-controller'
             env:
@@ -43,7 +43,7 @@ stages:
               AWS_DEFAULT_REGION: $(AWS_DEFAULT_REGION)
 
           - script: |
-              terraform apply --var-file=variables.tfvars -var="cluster_name=${{ parameters.cluster_name }}" --auto-approve
+              terraform apply --var-file=variables.tfvars -var="vpc_id=${{ parameters.vpc_id }}" -var="cluster_name=${{ parameters.cluster_name }}" --auto-approve
             displayName: terraform apply
             workingDirectory: '$(Build.SourcesDirectory)/aws-load-balaner-controller'
             env:
@@ -72,7 +72,7 @@ stages:
               AWS_DEFAULT_REGION: $(AWS_DEFAULT_REGION)
 
           - script: |
-              terraform plan --var-file=variables.tfvars -var="vpc_id=${{ parameters.vpc_id }}" -var="cluster_name=${{ parameters.cluster_name }}"
+              terraform plan --var-file=variables.tfvars -var="cluster_name=${{ parameters.cluster_name }}"
             displayName: terraform plan
             workingDirectory: '$(Build.SourcesDirectory)/argocd'
             env:
@@ -81,7 +81,7 @@ stages:
               AWS_DEFAULT_REGION: $(AWS_DEFAULT_REGION)
 
           - script: |
-              terraform apply --var-file=variables.tfvars -var="vpc_id=${{ parameters.vpc_id }}" -var="cluster_name=${{ parameters.cluster_name }}" --auto-approve
+              terraform apply --var-file=variables.tfvars -var="cluster_name=${{ parameters.cluster_name }}" --auto-approve
             displayName: terraform apply
             workingDirectory: '$(Build.SourcesDirectory)/argocd'
             env:
