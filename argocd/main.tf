@@ -13,8 +13,16 @@ resource "helm_release" "argocd" {
 
   set = [
     {
-    name  = "server.service.type"
-    value = "LoadBalancer"
-  }
+      name  = "server.service.type"
+      value = "LoadBalancer"
+    },
+    {
+      name  = "server.extraArgs[0]"
+      value = "--insecure"
+    },
+    {
+      name  = "server.service.type"
+      value = "ClusterIP"
+    }
   ]
 }
