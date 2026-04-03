@@ -1,5 +1,3 @@
-version: 9.3.2
-
 fullnameOverride: elasticsearch
 
 spec:
