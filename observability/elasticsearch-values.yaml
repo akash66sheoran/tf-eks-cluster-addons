@@ -1,0 +1,47 @@
+version: 9.3.2
+
+fullnameOverride: elasticsearch
+
+spec:
+  version: 9.3.2
+
+  http:
+    tls:
+      selfSignedCertificate:
+        disabled: true
+
+  nodeSets:
+    - name: default
+      count: 3
+      config:
+        node.store.allow_mmap: false
+      podTemplate:
+        spec:
+          affinity:
+            podAntiAffinity:
+              preferredDuringSchedulingIgnoredDuringExecution:
+                - weight: 100
+                  podAffinityTerm:
+                    topologyKey: kubernetes.io/hostname
+                    labelSelector:
+                      matchLabels:
+                        elasticsearch.k8s.elastic.co/cluster-name: elasticsearch
+          containers:
+            - name: elasticsearch
+              resources:
+                requests:
+                  cpu: "500m"
+                  memory: "2Gi"
+                limits:
+                  cpu: "1000m"
+                  memory: "2Gi"
+      volumeClaimTemplates:
+        - metadata:
+            name: elasticsearch-data
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            storageClassName: gp3-observability
+            resources:
+              requests:
+                storage: 30Gi

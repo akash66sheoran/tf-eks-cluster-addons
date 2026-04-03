@@ -1,0 +1,33 @@
+version: 9.3.2
+
+fullnameOverride: kibana
+
+eck-elasticsearch:
+  enabled: false
+
+spec:
+  version: 9.3.2
+  count: 1
+
+  elasticsearchRef:
+    name: elasticsearch
+
+  http:
+    tls:
+      selfSignedCertificate:
+        disabled: true
+    service:
+      spec:
+        type: ClusterIP
+
+  podTemplate:
+    spec:
+      containers:
+        - name: kibana
+          resources:
+            requests:
+              cpu: "200m"
+              memory: "1Gi"
+            limits:
+              cpu: "500m"
+              memory: "1Gi"
