@@ -164,3 +164,41 @@ stages:
               AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
               AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
               AWS_DEFAULT_REGION: $(AWS_DEFAULT_REGION)
+
+  - stage: InstallPrometheusAndGrafana
+    displayName: Install Prometheus and Grafana
+    jobs:
+      - job: Terraform
+        steps:
+          - checkout: self
+
+          - task: TerraformInstaller@1
+            inputs:
+              terraformVersion: 'latest'
+
+          - script: |
+              terraform init
+            displayName: terraform init
+            workingDirectory: '$(Build.SourcesDirectory)/monitoring'
+            env:
+              AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
+              AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
+              AWS_DEFAULT_REGION: $(AWS_DEFAULT_REGION)
+
+          - script: |
+              terraform plan --var-file=variables.tfvars -var="cluster_name=${{ parameters.cluster_name }}"
+            displayName: terraform plan
+            workingDirectory: '$(Build.SourcesDirectory)/monitoring'
+            env:
+              AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
+              AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
+              AWS_DEFAULT_REGION: $(AWS_DEFAULT_REGION)
+
+          - script: |
+              terraform apply --var-file=variables.tfvars -var="cluster_name=${{ parameters.cluster_name }}" --auto-approve
+            displayName: terraform apply
+            workingDirectory: '$(Build.SourcesDirectory)/monitoring'
+            env:
+              AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
+              AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
+              AWS_DEFAULT_REGION: $(AWS_DEFAULT_REGION)
